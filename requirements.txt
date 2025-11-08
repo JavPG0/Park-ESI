@@ -1,1 +1,2 @@
-kawarizmi
+opencv-python
+numpy
