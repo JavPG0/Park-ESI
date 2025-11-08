@@ -2,6 +2,8 @@ import cv2
 import time
 import numpy as np
 
+from itt import ITT
+
 class VehicleDetector:
 
     def __init__(self, model_cfg, model_weights):
@@ -21,6 +23,8 @@ class VehicleDetector:
 
         # Guardar las capas de salida
         self.output_layers = [ln[i - 1] for i in layer_indices]
+
+        self.feature_extractor = ITT()
 
     def detect(self, class_file, input_dimension, conf_threshold, nms_threshold):
 
@@ -101,6 +105,11 @@ class VehicleDetector:
             fps = frame_id / time_diff if time_diff > 0 else 0.0
             cv2.putText(frame, f"FPS: {fps:.2f}", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
             cv2.putText(frame, f"Detected vehicles: {detected_count}", (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
+
+            vehicle_crop = frame[max(y,0):y+bh, max(x,0):x+bw]
+            caption = ITT.describe_vehicle(vehicle_crop)
+            cv2.putText(frame, caption, (x, y + bh + 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,0), 1)
+
 
             cv2.imshow("Car Detection - YOLOv4-tiny", frame)
             if cv2.waitKey(1) & 0xFF == ord('o'):
