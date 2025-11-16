@@ -1,40 +1,39 @@
-from transformers import VisionEncoderDecoderModel, ViTImageProcessor, AutoTokenizer
-from PIL import Image
-import torch
 import cv2
+from transformers import BlipProcessor, BlipForConditionalGeneration
+from PIL import Image
 
 class ITT:
-    """
-    Clase para generar descripciones de características visibles
-    de vehículos a partir de recortes de imágenes.
-    """
-    def __init__(self, model_name="nlpconnect/vit-gpt2-image-captioning"):
-        self.device = "cpu"
+    
+    def __init__(self):
+        self.caption_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+        self.caption_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
-        # Cargar modelo y tokenizer de Hugging Face
-        self.model = VisionEncoderDecoderModel.from_pretrained(model_name).to(self.device)
-        self.feature_extractor = ViTImageProcessor.from_pretrained(model_name)
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        # Diccionarios simples para extracción
+        self.colors = [
+            "white", "black", "red", "blue", "green", "yellow",
+            "grey", "gray", "silver", "gold", "brown"
+        ]
 
-        # Parámetros de generación
-        self.gen_kwargs = {"max_length": 50, "num_beams": 4}
+        self.brands = [
+            "toyota", "ford", "chevrolet", "honda", "mercedes",
+            "bmw", "audi", "volkswagen", "nissan", "hyundai",
+            "renault", "fiat", "kia", "tesla"
+        ]
 
-    def describe_vehicle(self, vehicle_crop):
-        """
-        Recibe un recorte de vehículo (numpy array BGR de OpenCV)
-        y devuelve una descripción de sus características visibles.
-        """
-        if vehicle_crop.size == 0:
-            return ""
+    def describe_vehicle(self, crop_bgr):
+        crop_rgb = cv2.cvtColor(crop_bgr, cv2.COLOR_BGR2RGB)
+        image = Image.fromarray(crop_rgb)
 
-        # Convertir BGR a RGB y luego a PIL
-        pil_image = Image.fromarray(cv2.cvtColor(vehicle_crop, cv2.COLOR_BGR2RGB))
+        # Obtener caption general
+        inputs = self.caption_processor(image, return_tensors="pt")
+        out = self.caption_model.generate(**inputs, max_length=50)
+        caption = self.caption_processor.decode(out[0], skip_special_tokens=True).lower()
 
-        # Preprocesar imagen
-        pixel_values = self.feature_extractor(images=pil_image, return_tensors="pt").pixel_values.to(self.device)
+        # Detectar color y marca
+        color = next((c for c in self.colors if c in caption), None)
+        brand = next((b for b in self.brands if b in caption), None)
 
-        # Generar caption
-        output_ids = self.model.generate(pixel_values, **self.gen_kwargs)
-        caption = self.tokenizer.decode(output_ids[0], skip_special_tokens=True)
-
-        return caption
+        return {
+            "color": color,
+            "brand": brand
+        }
