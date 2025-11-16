@@ -111,24 +111,21 @@ class VehicleDetector:
                     # Guardar centro procesado
                     self.processed_centers.append((cx, cy))
 
-                    # Dibujar recuadro del vehículo (sin texto)
-                    cv2.rectangle(frame, (x, y), (x + bw, y + bh), (0, 255, 0), 2)
-
-                    # Recorte de la imagen del vehículo
+                    # Recortar imagen (sin recuadro)
                     crop = frame[max(0, y):max(0, y) + bh,
                                 max(0, x):max(0, x) + bw]
 
                     if crop.size != 0:
 
-                        # LLM: color y marca
+                        # Obtener color/marca del LLM
                         info = self.itt.describe_vehicle(crop)
 
-                        # Guardar imagen del vehículo
+                        # Guardar imagen recortada limpia
                         vehicle_id = len(self.results) + 1
                         img_path = f"{self.output_folder}/vehicle_{vehicle_id}.jpg"
                         cv2.imwrite(img_path, crop)
 
-                        # Guardar datos en JSON
+                        # Guardar en resultados JSON
                         self.results.append({
                             "vehicle_id": vehicle_id,
                             "color": info["color"],
@@ -136,6 +133,8 @@ class VehicleDetector:
                             "image_file": img_path
                         })
 
+                    # 🟩 5. DIBUJAR EL RECUADRO SOLO EN LA VISTA DE CÁMARA
+                    cv2.rectangle(frame, (x, y), (x + bw, y + bh), (0, 255, 0), 2)
 
             # Mostrar detección sin texto adicional
             cv2.imshow("Car Detection - YOLOv4-tiny", frame)
