@@ -120,6 +120,12 @@ class VehicleDetector:
                     # Guardar centro procesado
                     self.processed_centers.append((cx, cy))
 
+                     # Mostrar recuadro de deteccion de vehículo y etiqueta del la clase detectada.
+                    cv2.rectangle(frame, (x, y), (x + bw, y + bh), (0, 255, 0), 2)
+                    label = classes[class_ids[i]]
+                    cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+
+                    
                     # Recortar imagen (sin recuadro)
                     crop = frame[max(0, y):max(0, y) + bh,
                                 max(0, x):max(0, x) + bw]
