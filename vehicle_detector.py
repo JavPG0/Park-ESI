@@ -24,7 +24,7 @@ class VehicleDetector:
 
         self.output_layers = [ln[i - 1] for i in layer_indices]
 
-        # LLM
+        # Cargar
         self.itt = ITT()
 
         # Base de datos resultados
@@ -37,7 +37,8 @@ class VehicleDetector:
 
 
     def is_duplicate(self, cx, cy):
-        """Evita análisis repetido mediante comparación de coordenadas."""
+
+        # Evitar analizar dos veces el mismo vehículo
         for (px, py) in self.processed_centers:
             if abs(px - cx) < 60 and abs(py - cy) < 60:
                 return True
@@ -46,20 +47,21 @@ class VehicleDetector:
 
     def detect(self, class_file, input_dimension, conf_threshold, nms_threshold):
 
+        # Extraer qué vehículos se deben de identificar
         with open(class_file, 'r', encoding="utf-8") as f:
             classes = [line.strip() for line in f.readlines()]
-
         target_classes = {'car', 'truck', 'bus'}
 
+        # Iniciar captura de video
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():
             raise RuntimeError("No se pudo abrir la fuente de vídeo")
 
-        fps_start_time = time.time()
         frame_id = 0
         lock = False
 
-        while lock == False:
+        # Ciclo de reconocimiento
+        while lock is False:
             ret, frame = cap.read()
             if not ret:
                 break
@@ -117,7 +119,7 @@ class VehicleDetector:
 
                     if crop.size != 0:
 
-                        # Obtener color/marca del LLM
+                        # Obtener características del vehículo con el LLM
                         info = self.itt.describe_vehicle(crop)
 
                         # Guardar imagen recortada limpia
@@ -125,7 +127,7 @@ class VehicleDetector:
                         img_path = f"{self.output_folder}/vehicle_{vehicle_id}.jpg"
                         cv2.imwrite(img_path, crop)
 
-                        # Guardar en resultados JSON
+                        # Guardar resultados en JSON
                         self.results.append({
                             "vehicle_id": vehicle_id,
                             "color": info["color"],
@@ -133,18 +135,18 @@ class VehicleDetector:
                             "image_file": img_path
                         })
 
-                    # 🟩 5. DIBUJAR EL RECUADRO SOLO EN LA VISTA DE CÁMARA
-                    cv2.rectangle(frame, (x, y), (x + bw, y + bh), (0, 255, 0), 2)
-
             # Mostrar detección sin texto adicional
             cv2.imshow("Car Detection - YOLOv4-tiny", frame)
+
+            # Salir del programa si se presiona la tecla 'o'
             if cv2.waitKey(1) & 0xFF == ord('o'):
                 lock = True
 
+        # Finalizar la captura de video
         cap.release()
         cv2.destroyAllWindows()
 
-        # Guardar JSON final
+        # Guardar JSON con los resultados
         output_json_path = f"{self.output_folder}/results.json"
         with open(output_json_path, "w") as f:
             json.dump(self.results, f, indent=4)
