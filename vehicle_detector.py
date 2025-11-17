@@ -1,8 +1,9 @@
-import cv2
-import time
-import numpy as np
 import json
 import os
+import time
+
+import cv2
+import numpy as np
 
 from itt import ITT
 
@@ -37,6 +38,12 @@ class VehicleDetector:
 
 
     def is_duplicate(self, cx, cy):
+
+        '''
+        MÁS ADELANTE HAY QUE CAMBIAR ESTA PARTE PARA QUE
+        NO IDENTIFIQUE 2 VECES AL MISMO VEHÍCULO EN BASE
+        A LA MATRÍCULA DE ESTE
+        '''
 
         # Evitar analizar dos veces el mismo vehículo
         for (px, py) in self.processed_centers:
