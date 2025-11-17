@@ -19,13 +19,15 @@ class VehicleDetector:
         # Obtener capas
         ln = self.net.getLayerNames()
         layer_indices = self.net.getUnconnectedOutLayers()
-
         if isinstance(layer_indices[0], list) or isinstance(layer_indices[0], np.ndarray):
             layer_indices = [i[0] for i in layer_indices]
-
         self.output_layers = [ln[i - 1] for i in layer_indices]
 
-        # Cargar
+        # Cargar plazas de parking
+        with open("parking_slots.json", "r", encoding='utf-8') as f:
+            self.parking_slots = json.load(f)
+
+        # Cargar LLM
         self.itt = ITT()
 
         # Base de datos resultados
@@ -50,6 +52,27 @@ class VehicleDetector:
             if abs(px - cx) < 60 and abs(py - cy) < 60:
                 return True
         return False
+
+
+    def point_in_polygon(self, x, y, poly):
+
+        inside = False
+        n = len(poly)
+
+        # Detecta qué plazas de parking contienen un vehículo
+        px1, py1 = poly[0]
+        for i in range(n + 1):
+            px2, py2 = poly[i % n]
+            if y > min(py1, py2):
+                if y <= max(py1, py2):
+                    if x <= max(px1, px2):
+                        if py1 != py2:
+                            xinters = (y - py1) * (px2 - px1) / (py2 - py1) + px1
+                        if px1 == px2 or x <= xinters:
+                            inside = not inside
+            px1, py1 = px2, py2
+
+        return inside
 
 
     def detect(self, class_file, input_dimension, conf_threshold, nms_threshold):
@@ -127,6 +150,15 @@ class VehicleDetector:
                     text = f"{label}: {conf:.2f}"
                     cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
+                    # Identificar plazas de parking
+                    for slot in self.parking_slots:
+                        if self.point_in_polygon(cx, cy, slot["polygon"]):
+                            slot["occupied"] = True
+                        else:
+                            # Solo marcar como libre si no detectamos ningún coche en ella
+                            if "occupied" not in slot:
+                                slot["occupied"] = False
+
                     # Evitar duplicados
                     if self.is_duplicate(cx, cy):
                         continue
@@ -155,6 +187,21 @@ class VehicleDetector:
                             "brand": info["brand"],
                             "image_file": img_path
                         })
+
+            # Dibujar las plazas de parking
+            for slot in self.parking_slots:
+                pts = np.array(slot["polygon"], dtype=np.int32)
+
+                color = (0, 255, 0) if not slot.get("occupied", False) else (0, 0, 255)
+
+                cv2.polylines(frame, [pts], True, color, 2)
+
+                # Texto de estado
+                cx = int(np.mean([p[0] for p in slot["polygon"]]))
+                cy = int(np.mean([p[1] for p in slot["polygon"]]))
+                status = "Ocupada" if slot.get("occupied", False) else "Libre"
+                cv2.putText(frame, f"{slot['id']}: {status}", (cx, cy),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
             fps_end_time = time.time()
             time_diff = fps_end_time - fps_start_time
