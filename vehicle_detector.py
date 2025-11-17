@@ -64,6 +64,8 @@ class VehicleDetector:
         if not cap.isOpened():
             raise RuntimeError("No se pudo abrir la fuente de vídeo")
 
+        # Para medir FPS
+        fps_start_time = time.time()
         frame_id = 0
         lock = False
 
@@ -76,6 +78,7 @@ class VehicleDetector:
             frame_id += 1
             h, w = frame.shape[:2]
 
+            # Crear blob y forward
             blob = cv2.dnn.blobFromImage(frame, 1/255.0, (input_dimension, input_dimension), swapRB=True, crop=False)
             self.net.setInput(blob)
             outs = self.net.forward(self.output_layers)
@@ -107,11 +110,22 @@ class VehicleDetector:
                             centers.append((center_x, center_y))
 
             indices = cv2.dnn.NMSBoxes(boxes, confidences, conf_threshold, nms_threshold)
+            detected_count = 0
 
             if len(indices) > 0:
-                for idx, i in enumerate(indices.flatten()):
+                for _, i in enumerate(indices.flatten()):
                     x, y, bw, bh = boxes[i]
                     cx, cy = centers[i]
+
+                    label = classes[class_ids[i]]
+                    conf = confidences[i]
+                    detected_count += 1
+
+                    # Dibujar caja
+                    color = (0, 255, 0)
+                    cv2.rectangle(frame, (x, y), (x + bw, y + bh), color, 2)
+                    text = f"{label}: {conf:.2f}"
+                    cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
                     # Evitar duplicados
                     if self.is_duplicate(cx, cy):
@@ -119,12 +133,6 @@ class VehicleDetector:
 
                     # Guardar centro procesado
                     self.processed_centers.append((cx, cy))
-
-                     # Mostrar recuadro de deteccion de vehículo y etiqueta del la clase detectada.
-                    cv2.rectangle(frame, (x, y), (x + bw, y + bh), (0, 255, 0), 2)
-                    label = classes[class_ids[i]]
-                    cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-
                     
                     # Recortar imagen (sin recuadro)
                     crop = frame[max(0, y):max(0, y) + bh,
@@ -147,6 +155,12 @@ class VehicleDetector:
                             "brand": info["brand"],
                             "image_file": img_path
                         })
+
+            fps_end_time = time.time()
+            time_diff = fps_end_time - fps_start_time
+            fps = frame_id / time_diff if time_diff > 0 else 0.0
+            cv2.putText(frame, f"FPS: {fps:.2f}", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
+            cv2.putText(frame, f"Detected vehicles: {detected_count}", (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
 
             # Mostrar detección sin texto adicional
             cv2.imshow("Car Detection - YOLOv4-tiny", frame)
