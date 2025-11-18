@@ -80,7 +80,7 @@ class VehicleDetector:
         # Extraer qué vehículos se deben de identificar
         with open(class_file, 'r', encoding="utf-8") as f:
             classes = [line.strip() for line in f.readlines()]
-        target_classes = {'car', 'truck', 'bus'}
+        target_classes = {'car'}
 
         # Iniciar captura de video
         cap = cv2.VideoCapture(0)
@@ -91,6 +91,7 @@ class VehicleDetector:
         fps_start_time = time.time()
         frame_id = 0
         lock = False
+        free_spaces = 0
 
         # Ciclo de reconocimiento
         while lock is False:
@@ -150,12 +151,14 @@ class VehicleDetector:
                     text = f"{label}: {conf:.2f}"
                     cv2.putText(frame, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
+                    free_spaces = 0
                     # Identificar plazas de parking
                     for slot in self.parking_slots:
                         if self.point_in_polygon(cx, cy, slot["polygon"]):
                             slot["occupied"] = True
                         else:
                             slot["occupied"] = False
+                            free_spaces += 1
 
                     # Evitar duplicados
                     if self.is_duplicate(cx, cy):
@@ -205,7 +208,9 @@ class VehicleDetector:
             time_diff = fps_end_time - fps_start_time
             fps = frame_id / time_diff if time_diff > 0 else 0.0
             cv2.putText(frame, f"FPS: {fps:.2f}", (10, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
-            cv2.putText(frame, f"Detected vehicles: {detected_count}", (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
+            cv2.putText(frame, f"Vehiculos detectados: {detected_count}", (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
+            cv2.putText(frame, f"Espacios libres: {free_spaces}", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
+
 
             # Mostrar detección sin texto adicional
             cv2.imshow("Car Detection - YOLOv4-tiny", frame)

@@ -6,7 +6,7 @@ MODEL_WEIGHTS = "models/yolov4-tiny.weights"
 CLASS_FILE = "models/coco.names"
 
 # Parámetros
-CONF_THRESHOLD = 0.2
+CONF_THRESHOLD = 0.1
 NMS_THRESHOLD = 0.4
 INPUT_DIMENTSION = 416 # 320, 416*, 512, 640, 1280
 
