@@ -1,5 +1,5 @@
 # Park-ESI
-## To-Do Parl-ESI:
+## To-Do Park-ESI:
   - Mirar OCR y detección de matriculas --> Javi
   - Hacer pruebas con camaras reales.
   - Sopesar características del coche (cuales nos interesa mas reconocer o saber).
