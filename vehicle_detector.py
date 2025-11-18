@@ -155,9 +155,7 @@ class VehicleDetector:
                         if self.point_in_polygon(cx, cy, slot["polygon"]):
                             slot["occupied"] = True
                         else:
-                            # Solo marcar como libre si no detectamos ningún coche en ella
-                            if "occupied" not in slot:
-                                slot["occupied"] = False
+                            slot["occupied"] = False
 
                     # Evitar duplicados
                     if self.is_duplicate(cx, cy):
