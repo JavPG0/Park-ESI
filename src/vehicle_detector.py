@@ -212,8 +212,8 @@ class VehicleDetector:
             cv2.putText(frame, f"Espacios libres: {free_spaces}", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
 
 
-            # Mostrar detección sin texto adicional
-            cv2.imshow("Car Detection - YOLOv4-tiny", frame)
+            # Mostrar detección
+            cv2.imshow("Park-ESI", frame)
 
             # Salir del programa si se presiona la tecla 'o'
             if cv2.waitKey(1) & 0xFF == ord('o'):
@@ -224,8 +224,11 @@ class VehicleDetector:
         cv2.destroyAllWindows()
 
         # Guardar JSON con los resultados
-        output_json_path = f"{self.output_folder}/results.json"
-        with open(output_json_path, "w") as f:
+        output_json_path = f"{self.output_folder}/"
+        with open(f"{output_json_path}results.json", "w") as f:
             json.dump(self.results, f, indent=4)
+        with open("parking_slots.json", "w") as f:
+            json.dump(self.parking_slots, f, indent=4)
 
         print(f"Resultados guardados en {output_json_path}")
+        print(f"Plazas de parking actualizadas")
