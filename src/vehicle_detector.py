@@ -211,6 +211,12 @@ class VehicleDetector:
             cv2.putText(frame, f"Vehiculos detectados: {detected_count}", (10, 45), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
             cv2.putText(frame, f"Espacios libres: {free_spaces}", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)
 
+            # Guardar JSON con los resultados
+            output_json_path = f"{self.output_folder}/"
+            with open(f"{output_json_path}results.json", "w") as f:
+                json.dump(self.results, f, indent=4)
+            with open("parking_slots.json", "w") as f:
+                json.dump(self.parking_slots, f, indent=4)
 
             # Mostrar detección
             cv2.imshow("Park-ESI", frame)
@@ -222,13 +228,3 @@ class VehicleDetector:
         # Finalizar la captura de video
         cap.release()
         cv2.destroyAllWindows()
-
-        # Guardar JSON con los resultados
-        output_json_path = f"{self.output_folder}/"
-        with open(f"{output_json_path}results.json", "w") as f:
-            json.dump(self.results, f, indent=4)
-        with open("parking_slots.json", "w") as f:
-            json.dump(self.parking_slots, f, indent=4)
-
-        print(f"Resultados guardados en {output_json_path}")
-        print(f"Plazas de parking actualizadas")
