@@ -12,7 +12,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Estado del Parking")),
+      appBar: AppBar(title: Text("Vehículos en el Parking")),
       body: FutureBuilder(
         future: api.getVehicles(),
         builder: (context, snapshot) {
