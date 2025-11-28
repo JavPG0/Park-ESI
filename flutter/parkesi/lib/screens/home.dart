@@ -1,41 +1,54 @@
 import 'package:flutter/material.dart';
-import '../services/fastapi.dart';
+import 'parking.dart';
+import 'login.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final api = ApiService();
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Vehículos en el Parking")),
-      body: FutureBuilder(
-        future: api.getVehicles(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
+      backgroundColor: const Color.fromARGB(255, 29, 41, 107),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Logo
+              Image.asset(
+                'assets/images/logo.png',
+                width: 540,
+              ),
 
-          final vehicles = snapshot.data as List;
+              const SizedBox(height: 40),
 
-          return ListView.builder(
-            itemCount: vehicles.length,
-            itemBuilder: (context, index) {
-              final v = vehicles[index];
-              return ListTile(
-                title: Text("Vehículo ${v['vehicle_id']}"),
-                subtitle: Text(
-                  "Color: ${v['color'] ?? 'Desconocido'}\n"
-                  "Marca: ${v['brand'] ?? 'Desconocida'}",
-                ),
-              );
-            },
-          );
-        },
+              // Botón Login
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  );
+                },
+                child: const Text("Login"),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Botón Parking
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ParkingScreen()),
+                  );
+                },
+                child: const Text("Parking"),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
