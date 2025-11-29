@@ -63,10 +63,10 @@ class RegisterScreen extends StatelessWidget {
                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
                 border: OutlineInputBorder(),
               ),
-              style: const TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 15, color: Colors.white),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             TextField(
               controller: emailController,
@@ -75,10 +75,10 @@ class RegisterScreen extends StatelessWidget {
                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
                 border: OutlineInputBorder(),
               ),
-              style: const TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 15, color: Colors.white),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             TextField(
               controller: passwordController,
@@ -88,10 +88,10 @@ class RegisterScreen extends StatelessWidget {
                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
                 border: OutlineInputBorder(),
               ),
-              style: const TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 15, color: Colors.white),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             TextField(
               controller: confirmController,
@@ -101,20 +101,20 @@ class RegisterScreen extends StatelessWidget {
                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
                 border: OutlineInputBorder(),
               ),
-              style: const TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 15, color: Colors.white),
             ),
 
-            const SizedBox(height: 50),
+            const SizedBox(height: 30),
 
             SizedBox(
               width: 150,
-              height: 75,
+              height: 70,
               child: ElevatedButton(
                 onPressed: () => handleRegister(context),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(20),
                 ),
-                child: const Text("Registrar", style: TextStyle(fontSize: 25)),
+                child: const Text("Registrar", style: TextStyle(fontSize: 20)),
               ),
             ),
           ],
