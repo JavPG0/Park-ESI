@@ -1,68 +1,107 @@
 import 'package:flutter/material.dart';
+import '../services/fastapi.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  RegisterScreen({super.key});
+
+  final api = ApiService();
+
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmController = TextEditingController();
+
+  void showMessage(BuildContext context, String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg)),
+    );
+  }
+
+  Future<void> handleRegister(BuildContext context) async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirm = confirmController.text.trim();
+
+    if (name.isEmpty || email.isEmpty || password.isEmpty || confirm.isEmpty) {
+      showMessage(context, "Todos los campos son obligatorios.");
+      return;
+    }
+
+    if (password != confirm) {
+      showMessage(context, "Las contraseñas no coinciden.");
+      return;
+    }
+
+    final response = await api.registerUser(
+      name: name,
+      email: email,
+      password: password,
+    );
+
+    if (response["status"] == 200) {
+      showMessage(context, "Usuario registrado correctamente.");
+    } else {
+      showMessage(context, "Error: ${response["data"]["detail"]}");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 29, 41, 107),
-      appBar: AppBar(title: const Text("Login")),
+      appBar: AppBar(title: const Text("Registro")),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Nombre
             TextField(
+              controller: nameController,
               decoration: const InputDecoration(
                 labelText: "Nombre",
                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
                 border: OutlineInputBorder(),
-                focusColor: Colors.white,
               ),
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 20, color: Colors.white),
             ),
 
             const SizedBox(height: 30),
 
-            // Email
             TextField(
+              controller: emailController,
               decoration: const InputDecoration(
                 labelText: "Email",
                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
                 border: OutlineInputBorder(),
-                focusColor: Colors.white,
               ),
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 20, color: Colors.white),
             ),
 
             const SizedBox(height: 30),
 
-            // Contraseña
             TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Contraseña",
                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
                 border: OutlineInputBorder(),
-                focusColor: Colors.white,
               ),
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 20, color: Colors.white),
             ),
 
             const SizedBox(height: 30),
 
-            // Confirmar Contraseña
             TextField(
+              controller: confirmController,
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Confirmar Contraseña",
                 labelStyle: TextStyle(fontSize: 15, color: Colors.white),
                 border: OutlineInputBorder(),
-                focusColor: Colors.white,
               ),
-              style: TextStyle(fontSize: 20, color: Colors.white),
+              style: const TextStyle(fontSize: 20, color: Colors.white),
             ),
 
             const SizedBox(height: 50),
@@ -71,17 +110,11 @@ class RegisterScreen extends StatelessWidget {
               width: 150,
               height: 75,
               child: ElevatedButton(
-                onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Intentando nuevo registro...")),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(20),
-              ),
-              child: const Text(
-                "Registrar",
-                style: TextStyle(fontSize:25)),
+                onPressed: () => handleRegister(context),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(20),
+                ),
+                child: const Text("Registrar", style: TextStyle(fontSize: 25)),
               ),
             ),
           ],
