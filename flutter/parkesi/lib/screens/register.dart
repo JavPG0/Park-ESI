@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +13,19 @@ class LoginScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Nombre
+            TextField(
+              decoration: const InputDecoration(
+                labelText: "Nombre",
+                labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+                border: OutlineInputBorder(),
+                focusColor: Colors.white,
+              ),
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
+
+            const SizedBox(height: 30),
+
             // Email
             TextField(
               decoration: const InputDecoration(
@@ -38,6 +51,20 @@ class LoginScreen extends StatelessWidget {
               style: TextStyle(fontSize: 20, color: Colors.white),
             ),
 
+            const SizedBox(height: 30),
+
+            // Confirmar Contraseña
+            TextField(
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: "Confirmar Contraseña",
+                labelStyle: TextStyle(fontSize: 15, color: Colors.white),
+                border: OutlineInputBorder(),
+                focusColor: Colors.white,
+              ),
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
+
             const SizedBox(height: 50),
 
             SizedBox(
@@ -46,14 +73,14 @@ class LoginScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Intentando iniciar sesión...")),
+                  const SnackBar(content: Text("Intentando nuevo registro...")),
                 );
               },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(20),
               ),
               child: const Text(
-                "Login",
+                "Registrar",
                 style: TextStyle(fontSize:25)),
               ),
             ),

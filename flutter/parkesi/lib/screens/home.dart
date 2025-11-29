@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'parking.dart';
 import 'login.dart';
+import 'register.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,33 +19,70 @@ class HomeScreen extends StatelessWidget {
               // Logo
               Image.asset(
                 'assets/images/logo.png',
-                width: 540,
+                scale: 0.25,
               ),
 
-              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 150,
+                    height: 75,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const LoginScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.all(20),
+                      ),
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(fontSize:20)),
+                    ),
+                  ),
 
-              // Botón Login
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  );
-                },
-                child: const Text("Login"),
+                  const SizedBox(width: 20),
+
+                  SizedBox(
+                    width: 150,
+                    height: 75,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                        );
+                      },
+                      child: const Text(
+                        "Registrarse",
+                        style: TextStyle(fontSize:20)),
+                    ),
+                  ),
+                ],
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: 30,),
 
-              // Botón Parking
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ParkingScreen()),
-                  );
-                },
-                child: const Text("Parking"),
+              SizedBox(
+                width: 300,
+                height: 75,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ParkingScreen()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(20),
+                  ),
+                  child: const Text(
+                    "Parking",
+                    style: TextStyle(fontSize:25)),
+                ),
               ),
             ],
           ),
