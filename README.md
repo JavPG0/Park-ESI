@@ -1,5 +1,7 @@
 # Park-ESI
 ## To-Do Park-ESI:
+  - IR ACTUALIZANDO EL PORTFOLIO
+
   - Cambiar el logo de la app.
   - Implementar el "enlazado" de vehículos/usuarios.
   - Implementar el contacto con usuarios de vehículos bloqueantes.
