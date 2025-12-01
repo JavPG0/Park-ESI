@@ -1,10 +1,11 @@
 # Park-ESI
 ## To-Do Park-ESI:
-  - Mirar OCR y detección de matriculas --> Javi
+  - Cambiar el logo de la app.
+  - Implementar el "enlazado" de vehículos/usuarios.
+  - Implementar el contacto con usuarios de vehículos bloqueantes.
+  - Dearrollar el sistema de identificación de matrículas (OCR).
   - Hacer pruebas con camaras reales.
-  - Sopesar características del coche (cuales nos interesa mas reconocer o saber).
-  - Especializar el programa para la doble camara (mirar si un modelo para cada cámara). 
-  - Hacer la maqueta-
-  - Investigar mejores modelos
-
-  - Investigar para implementar "app" con Flutter con Dart.
+  - Sopesar características de reconocimiento de vehículo.
+  - Especializar el programa para la doble camara (Identificación/Seguimiento). 
+  - Hacer la maqueta (Sujeto a decisión respecto a la defensa).
+  - Investigar mejores modelos (Tanto de CV como LLM).
