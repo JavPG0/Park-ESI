@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -16,7 +17,7 @@ class ApiService {
     required String email,
     required String password,
   }) async {
-    final url = Uri.parse("$baseUrl/register");
+    final url = Uri.parse("$baseUrl/register/user");
 
     final body = jsonEncode({
       "name": name,
@@ -46,6 +47,36 @@ class ApiService {
     final body = jsonEncode({
       "email": email,
       "password": password,
+    });
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    return {
+      "status": response.statusCode,
+      "data": jsonDecode(response.body),
+    };
+  }
+
+  // REGISTER VEHICLE
+  Future<Map<String, dynamic>> registerVehicle({
+    required String email,
+    required String plate,
+    required String color,
+    required String brand,
+    required bool shared,
+  }) async {
+    final url = Uri.parse("$baseUrl/register/vehicle");
+
+    final body = jsonEncode({
+      "email": email,
+      "plate": plate,
+      "color": color,
+      "brand": brand,
+      "shared": shared,
     });
 
     final response = await http.post(

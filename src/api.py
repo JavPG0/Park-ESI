@@ -8,27 +8,39 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 app = FastAPI()
 
 def load_users():
-    user_path = BASE_DIR / "users.json"
+    user_path = BASE_DIR / "data/users.json"
     if not user_path.exists():
         return []
     with open(user_path, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def save_users(users):
-    user_path = BASE_DIR / "users.json"
+    user_path = BASE_DIR / "data/users.json"
     with open(user_path, "w", encoding="utf-8") as f:
         json.dump(users, f, indent=4)
 
+def load_vehicles():
+    vehicle_path = BASE_DIR / "data/vehicles.json"
+    if not vehicle_path.exists():
+        return []
+    with open(vehicle_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_vehicles(vehicles):
+    vehicle_path = BASE_DIR / "data/vehicles.json"
+    with open(vehicle_path, "w", encoding="utf-8") as f:
+        json.dump(vehicles, f, indent=4)
+
 @app.get("/parking")
 def get_parking_slots():
-    slots_path = BASE_DIR / "parking_slots.json"
+    slots_path = BASE_DIR / "data/parking_slots.json"
     with open(slots_path, "r") as f:
         slots = json.load(f)
     return slots
 
 
-@app.post("/register")
-def register(user: dict):
+@app.post("/register/user")
+def registerUser(user: dict):
     users = load_users()
 
     # Evitar duplicados
@@ -51,3 +63,17 @@ def login(credentials: dict):
 
     raise HTTPException(status_code=401,
                         detail="Email o Contraseña incorrectos. Por favor, intente de nuevo.")
+
+@app.post("/register/vehicle")
+def registerVehicle(vehicle: dict):
+    vehicles = load_vehicles()
+
+    # Evitar duplicados
+    for v in vehicles:
+        if v["plate"] == vehicle["plate"] and vehicle["shared"] is False:
+            raise HTTPException(status_code=400,
+                                detail="Este vehículo ya ha sido registrado.")
+
+    vehicles.append(vehicle)
+    save_vehicles(vehicles)
+    return {"message": "Vehículo registrado correctamente."}

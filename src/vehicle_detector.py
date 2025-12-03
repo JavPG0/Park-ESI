@@ -25,7 +25,7 @@ class VehicleDetector:
         self.output_layers = [ln[i - 1] for i in layer_indices]
 
         # Cargar plazas de parking
-        with open("parking_slots.json", "r", encoding='utf-8') as f:
+        with open("data/parking_slots.json", "r", encoding='utf-8') as f:
             self.parking_slots = json.load(f)
 
         # Cargar LLM
@@ -227,7 +227,7 @@ class VehicleDetector:
             output_json_path = f"{self.output_folder}/"
             with open(f"{output_json_path}results.json", "w") as f:
                 json.dump(self.results, f, indent=4)
-            with open("parking_slots.json", "w") as f:
+            with open("data/parking_slots.json", "w") as f:
                 json.dump(self.parking_slots, f, indent=4)
 
             # Mostrar detección

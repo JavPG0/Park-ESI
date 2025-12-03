@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import '../services/fastapi.dart';
-import 'user.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+class ConsultScreen extends StatelessWidget {
+  final String email;
+
+  ConsultScreen({super.key, required this.email});
 
   final api = ApiService();
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
 
   void showMessage(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -16,35 +14,11 @@ class LoginScreen extends StatelessWidget {
     );
   }
 
-  Future<void> handleLogin(BuildContext context) async {
-    final email = emailController.text.trim();
-    final password = passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      showMessage(context, "Todos los campos son obligatorios.");
-      return;
-    }
-
-    final response = await api.loginUser(
-      email: email,
-      password: password,
-    );
-
-    if (response["status"] == 200) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => UserScreen(email:email)),
-      );
-    } else {
-      showMessage(context, "Error: ${response["data"]["detail"]}");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 29, 41, 107),
-      appBar: AppBar(title: const Text("Login")),
+      appBar: AppBar(title: const Text("Consultar Vehículos")),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(

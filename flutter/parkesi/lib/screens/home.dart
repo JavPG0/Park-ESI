@@ -19,8 +19,10 @@ class HomeScreen extends StatelessWidget {
               // Logo
               Image.asset(
                 'assets/images/logo.png',
-                scale: 0.25,
+                scale: 2,
               ),
+
+              SizedBox(height: 50,),
 
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
