@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "http://192.168.5.38:8000"; // IP del backend de Python
+  final String baseUrl = "http://192.168.1.12:8000"; // IP local
+  //uvicorn src.api:app --host 192.168.1.12 --port 8000
 
   // GET PARKING
   Future<List<dynamic>> getParkingSlots() async {
@@ -61,6 +61,23 @@ class ApiService {
     };
   }
 
+  // DELETE USER
+  Future<bool> deleteUser(String email) async {
+    final url = Uri.parse("$baseUrl/delete/user");
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"email": email}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error al borrar el usuario: ${response.body}");
+    }
+  }
+
   // REGISTER VEHICLE
   Future<Map<String, dynamic>> registerVehicle({
     required String email,
@@ -89,5 +106,39 @@ class ApiService {
       "status": response.statusCode,
       "data": jsonDecode(response.body),
     };
+  }
+
+  // GET VEHICLES
+  Future<List<dynamic>> getVehicles(String email) async {
+    final url = Uri.parse("$baseUrl/consult");
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"email": email}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error al consultar vehículos: ${response.body}");
+    }
+  }
+
+  // DELETE VEHICLE
+  Future<bool> deleteVehicle(String plate) async {
+    final url = Uri.parse("$baseUrl/delete/vehicle");
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"plate": plate}),
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception("Error al borrar el vehículo: ${response.body}");
+    }
   }
 }

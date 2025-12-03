@@ -1,17 +1,47 @@
 import 'package:flutter/material.dart';
 import '../services/fastapi.dart';
 
-class ConsultScreen extends StatelessWidget {
+class ConsultScreen extends StatefulWidget {
   final String email;
 
-  ConsultScreen({super.key, required this.email});
+  const ConsultScreen({super.key, required this.email});
 
+  @override
+  State<ConsultScreen> createState() => _ConsultScreenState();
+}
+
+class _ConsultScreenState extends State<ConsultScreen> {
   final api = ApiService();
 
-  void showMessage(BuildContext context, String msg) {
+  void showMessage(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg)),
     );
+  }
+
+  late Future<List<dynamic>> vehicles;
+
+  @override
+  void initState() {
+    super.initState();
+    vehicles = api.getVehicles(widget.email);
+  }
+
+  void refreshList() {
+    setState(() {
+      vehicles = api.getVehicles(widget.email);
+    });
+  }
+
+  void deleteVehicle(String plate) async {
+    final success = await api.deleteVehicle(plate);
+
+    if (success) {
+      showMessage("Vehículo eliminado.");
+      refreshList();
+    } else {
+      showMessage("Error al eliminar vehículo.");
+    }
   }
 
   @override
@@ -21,51 +51,49 @@ class ConsultScreen extends StatelessWidget {
       appBar: AppBar(title: const Text("Consultar Vehículos")),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Email
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                labelStyle: TextStyle(fontSize: 15, color: Colors.white),
-                border: OutlineInputBorder(),
-              ),
-              style: const TextStyle(fontSize: 20, color: Colors.white),
-            ),
+        child: FutureBuilder<List<dynamic>>(
+          future: vehicles,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              );
+            }
 
-            const SizedBox(height: 30),
-
-            // Contraseña
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Contraseña",
-                labelStyle: TextStyle(fontSize: 15, color: Colors.white),
-                border: OutlineInputBorder(),
-              ),
-              style: const TextStyle(fontSize: 20, color: Colors.white),
-            ),
-
-            const SizedBox(height: 50),
-
-            SizedBox(
-              width: 150,
-              height: 75,
-              child: ElevatedButton(
-                onPressed: () => handleLogin(context),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(20),
+            if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text(
+                  "No se encontraron vehículos registrados.",
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
-                child: const Text(
-                  "Login",
-                  style: TextStyle(fontSize: 25),
-                ),
-              ),
-            ),
-          ],
+              );
+            }
+
+            final vehicles = snapshot.data!;
+
+            return ListView.builder(
+              itemCount: vehicles.length,
+              itemBuilder: (context, index) {
+                final v = vehicles[index];
+                return Card(
+                  color: Colors.white,
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  child: ListTile(
+                    title: Text("Vehículo (${index + 1})"),
+                    subtitle: Text(
+                      "Matrícula: ${v["plate"]}\n"
+                      "Color: ${v["color"]}\n"
+                      "Marca: ${v["brand"]}",
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => deleteVehicle(v["plate"]),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
         ),
       ),
     );

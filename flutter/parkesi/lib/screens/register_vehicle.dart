@@ -12,8 +12,6 @@ class RegisterVehicleScreen extends StatefulWidget {
 
 class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
   final api = ApiService();
-
-  final emailController = TextEditingController();
   final plateController = TextEditingController();
   final colorController = TextEditingController();
   final brandController = TextEditingController();
@@ -27,18 +25,17 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
   }
 
   Future<void> handleRegister(BuildContext context) async {
-    final email = emailController.text.trim();
     final plate = plateController.text.trim();
     final color = colorController.text.trim();
     final brand = brandController.text.trim();
 
-    if (email.isEmpty || plate.isEmpty || color.isEmpty || brand.isEmpty) {
+    if (plate.isEmpty || color.isEmpty || brand.isEmpty) {
       showMessage(context, "Todos los campos son obligatorios.");
       return;
     }
 
     final response = await api.registerVehicle(
-      email: email,
+      email: widget.email,
       plate: plate,
       color: color,
       brand: brand,
@@ -99,7 +96,10 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
             const SizedBox(height: 20),
 
             CheckboxListTile(
-              title: const Text("Comparto el vehículo con algún usuario del parking"),
+              title: const Text(
+                "Comparto el vehículo con algún usuario del parking",
+                style: TextStyle(color: Colors.white),
+              ),
               value: shared,
               onChanged: (newShared) {
                 setState(() {

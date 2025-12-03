@@ -1,2 +1,9 @@
 [
+    {
+        "email": "aloncampi@gmail.com",
+        "plate": "1234 ABC",
+        "color": "Rojo",
+        "brand": "Renault",
+        "shared": false
+    }
 ]
