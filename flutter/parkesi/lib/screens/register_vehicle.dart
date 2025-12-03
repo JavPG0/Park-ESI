@@ -118,7 +118,7 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.all(20),
                 ),
-                child: const Text("Registrar", style: TextStyle(fontSize: 20)),
+                child: const Text("Aceptar", style: TextStyle(fontSize: 20)),
               ),
             ),
           ],
