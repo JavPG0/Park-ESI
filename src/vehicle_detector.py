@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 
 from itt import ITT
+from plate_reader import PlateReader
 
 class VehicleDetector:
 
@@ -38,8 +39,14 @@ class VehicleDetector:
         # Para evitar duplicados
         self.processed_centers = []
 
+        #Cagamos el lector de matrículas
+        self.plate_reader = PlateReader()
 
-    def is_duplicate(self, cx, cy):
+        #Diccionario de matrículas ya leídas
+        self.preocessed_plates = {}
+
+
+    def is_duplicate(self, plate):
 
         '''
         MÁS ADELANTE HAY QUE CAMBIAR ESTA PARTE PARA QUE
@@ -160,34 +167,39 @@ class VehicleDetector:
                             slot["occupied"] = False
                             free_spaces += 1
 
-                    # Evitar duplicados
-                    if self.is_duplicate(cx, cy):
-                        continue
-
-                    # Guardar centro procesado
-                    self.processed_centers.append((cx, cy))
-                    
                     # Recortar imagen (sin recuadro)
                     crop = frame[max(0, y):max(0, y) + bh,
                                 max(0, x):max(0, x) + bw]
 
                     if crop.size != 0:
-
+                        # Leer matrícula
+                        plate = self.plate_reader.read_plate(crop)
+                        
+                        # Evitar duplicados por matrícula
+                        if self.is_duplicate(plate):
+                            continue
+                        
                         # Obtener características del vehículo con el LLM
                         info = self.itt.describe_vehicle(crop)
-
+                        
                         # Guardar imagen recortada limpia
                         vehicle_id = len(self.results) + 1
                         img_path = f"{self.output_folder}/vehicle_{vehicle_id}.jpg"
                         cv2.imwrite(img_path, crop)
-
+                        
+                        # Registrar matrícula procesada
+                        if plate:
+                            self.processed_plates[plate] = vehicle_id
+                        
                         # Guardar resultados en JSON
                         self.results.append({
                             "vehicle_id": vehicle_id,
+                            "plate": plate,  # Matrícula leída
                             "color": info["color"],
                             "brand": info["brand"],
                             "image_file": img_path
                         })
+
 
             # Dibujar las plazas de parking
             for slot in self.parking_slots:
