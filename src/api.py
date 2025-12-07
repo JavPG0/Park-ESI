@@ -43,7 +43,6 @@ def get_parking_slots():
 def registerUser(user: dict):
     users = load_users()
 
-    # Evitar duplicados
     for u in users:
         if u["email"] == user["email"]:
             raise HTTPException(status_code=400,
@@ -85,7 +84,6 @@ def deleteUser(data: dict):
 def registerVehicle(vehicle: dict):
     vehicles = load_vehicles()
 
-    # Evitar duplicados
     for v in vehicles:
         if v["plate"] == vehicle["plate"] and vehicle["shared"] is False:
             raise HTTPException(status_code=400,

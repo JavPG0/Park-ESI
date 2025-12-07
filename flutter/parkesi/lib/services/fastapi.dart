@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "http://192.168.1.12:8000"; // IP local
+  final String baseUrl = "http://192.168.5.38:8000"; // IP local
   //uvicorn src.api:app --host 192.168.1.12 --port 8000
 
   // GET PARKING

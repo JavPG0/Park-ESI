@@ -64,7 +64,7 @@ class UserScreen extends StatelessWidget {
             children: [
               SizedBox(
                 width: 300,
-                height: 75,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -77,15 +77,15 @@ class UserScreen extends StatelessWidget {
                   ),
                   child: const Text(
                     "Consultar Vehículos",
-                    style: TextStyle(fontSize:25)),
+                    style: TextStyle(fontSize:20)),
                 ),
               ),
 
-              SizedBox(width: 50),
+              SizedBox(height: 50),
 
               SizedBox(
                 width: 300,
-                height: 75,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -95,24 +95,24 @@ class UserScreen extends StatelessWidget {
                   },
                   child: const Text(
                     "Registrar Vehiculo",
-                    style: TextStyle(fontSize:25)),
+                    style: TextStyle(fontSize:20)),
                 ),
               ),
 
-              SizedBox(width: 50),
+              SizedBox(height: 50),
 
               SizedBox(
                 width: 300,
-                height: 75,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () => deleteConfirmation(context),
                   child: const Text(
                     "Eliminar Usuario",
-                    style: TextStyle(fontSize:25)),
+                    style: TextStyle(fontSize:20)),
                 ),
               ),
 
-              SizedBox(height: 50,),
+              SizedBox(height: 50),
 
               SizedBox(
                 width: 300,

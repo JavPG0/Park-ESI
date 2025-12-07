@@ -1,0 +1,2 @@
+uvicorn src.api:app --host {IP} --port 8000
+flutter run
