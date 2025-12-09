@@ -13,7 +13,6 @@ NMS_THRESHOLD = 0.4
 INPUT_DIMENTSION = 416 # 320, 416*, 512, 640, 1280
 
 def main():
-    """
     tipo = input("Seleccione el tipo de cámara (0: Identificación|1: Seguimiento): ")
     while tipo != 0 or tipo != 1:
         match tipo:
@@ -24,10 +23,8 @@ def main():
                 vf = VehicleFollower(MODEL_CFG, MODEL_WEIGHTS)
                 vf.follow(CLASS_FILE, INPUT_DIMENTSION, CONF_THRESHOLD, NMS_THRESHOLD)
             case _:
-                tipo = input("Opción inválida.\nSeleccione el tipo de cámara (0: Identificación|1: Seguimiento): ")
-    """
-    vd = VehicleDetector(MODEL_CFG, MODEL_WEIGHTS)
-    vd.detect(CLASS_FILE, INPUT_DIMENTSION, CONF_THRESHOLD, NMS_THRESHOLD)
+                vd = VehicleDetector(MODEL_CFG, MODEL_WEIGHTS)
+                vd.detect(CLASS_FILE, INPUT_DIMENTSION, CONF_THRESHOLD, NMS_THRESHOLD)
                 
 if __name__ == "__main__":
     main()

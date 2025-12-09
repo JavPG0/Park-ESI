@@ -42,7 +42,7 @@ class VehicleIdentifier:
         target_classes = {"car"}
 
         # Captura de vídeo
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(2)
         if not cap.isOpened():
             raise RuntimeError("No se pudo abrir la cámara")
 
@@ -115,6 +115,9 @@ class VehicleIdentifier:
                     # Guardar en JSON
                     with open(self.json_path, "w", encoding="utf-8") as f:
                         json.dump(self.results, f, indent=4)
+            
+            # Mostrar detección
+            cv2.imshow("Park-ESI", frame)
 
             # Salir al pulsar "o"
             if cv2.waitKey(1) & 0xFF == ord('o'):
