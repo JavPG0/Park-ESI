@@ -37,14 +37,12 @@ class UserScreen extends StatelessWidget {
     );
 
     if (confirmed == true) {
-      final success = await api.deleteVehicle(email);
+      Navigator.pop(context);
+      Navigator.pop(context);
+      final success = await api.deleteUser(email);
 
       if (success) {
         showMessage(context, "Usuario eliminado.");
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
-          (route) => false,
-        );
       } else {
         showMessage(context, "Error al eliminar usuario.");
       }
@@ -64,7 +62,7 @@ class UserScreen extends StatelessWidget {
             children: [
               SizedBox(
                 width: 300,
-                height: 50,
+                height: 75,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -85,7 +83,7 @@ class UserScreen extends StatelessWidget {
 
               SizedBox(
                 width: 300,
-                height: 50,
+                height: 75,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -103,7 +101,7 @@ class UserScreen extends StatelessWidget {
 
               SizedBox(
                 width: 300,
-                height: 50,
+                height: 75,
                 child: ElevatedButton(
                   onPressed: () => deleteConfirmation(context),
                   child: const Text(

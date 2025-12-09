@@ -44,6 +44,7 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
 
     if (response["status"] == 200) {
       showMessage(context, "Vehículo registrado correctamente.");
+      Navigator.pop(context);
     } else {
       showMessage(context, "Error: ${response["data"]["detail"]}");
     }
@@ -108,7 +109,7 @@ class _RegisterVehicleScreenState extends State<RegisterVehicleScreen> {
               },
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             SizedBox(
               width: 150,

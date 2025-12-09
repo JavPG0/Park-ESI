@@ -41,6 +41,7 @@ class RegisterScreen extends StatelessWidget {
 
     if (response["status"] == 200) {
       showMessage(context, "Usuario registrado correctamente.");
+      Navigator.pop(context);
     } else {
       showMessage(context, "Error: ${response["data"]["detail"]}");
     }

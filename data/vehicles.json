@@ -5,5 +5,12 @@
         "color": "Rojo",
         "brand": "Renault",
         "shared": false
+    },
+    {
+        "email": "aloncampi@gmail.com",
+        "plate": "1244GTF",
+        "color": "Negro",
+        "brand": "Opel",
+        "shared": false
     }
 ]
