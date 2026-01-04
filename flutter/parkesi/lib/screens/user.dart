@@ -52,86 +52,95 @@ class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 29, 41, 107),
       appBar: AppBar(title: const Text("Usuario")),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 300,
-                height: 75,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => ConsultScreen(email:email)),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(20),
-                  ),
-                  child: const Text(
-                    "Consultar Vehículos",
-                    style: TextStyle(fontSize:20)),
-                ),
-              ),
-
-              SizedBox(height: 50),
-
-              SizedBox(
-                width: 300,
-                height: 75,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => RegisterVehicleScreen(email:email)),
-                    );
-                  },
-                  child: const Text(
-                    "Registrar Vehiculo",
-                    style: TextStyle(fontSize:20)),
-                ),
-              ),
-
-              SizedBox(height: 50),
-
-              SizedBox(
-                width: 300,
-                height: 75,
-                child: ElevatedButton(
-                  onPressed: () => deleteConfirmation(context),
-                  child: const Text(
-                    "Eliminar Usuario",
-                    style: TextStyle(fontSize:20)),
-                ),
-              ),
-
-              SizedBox(height: 50),
-
-              SizedBox(
-                width: 300,
-                height: 75,
-                child: ElevatedButton(
-                  onPressed: () => showMessage(context, "Función en desarrollo"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.zero,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/background.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 300,
+                  height: 75,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => ConsultScreen(email:email)),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(20),
                     ),
-                    textStyle: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                    ),
+                    child: const Text(
+                      "Consultar Vehículos",
+                      style: TextStyle(fontSize:20, fontWeight: FontWeight.bold)),
                   ),
-                  child: const Text("Avisar de Bloqueo"),
                 ),
-              ),
-            ],
+
+                SizedBox(height: 50),
+
+                SizedBox(
+                  width: 300,
+                  height: 75,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => RegisterVehicleScreen(email:email)),
+                      );
+                    },
+                    child: const Text(
+                      "Registrar Vehiculo",
+                      style: TextStyle(fontSize:20, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+
+                SizedBox(height: 50),
+
+                SizedBox(
+                  width: 300,
+                  height: 75,
+                  child: ElevatedButton(
+                    onPressed: () => deleteConfirmation(context),
+                    child: const Text(
+                      "Eliminar Usuario",
+                      style: TextStyle(fontSize:20, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+
+                SizedBox(height: 50),
+
+                SizedBox(
+                  width: 300,
+                  height: 75,
+                  child: ElevatedButton(
+                    onPressed: () => showMessage(context, "Función en desarrollo"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                      ),
+                    ),
+                    child: const Text("Avisar de Bloqueo"),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
