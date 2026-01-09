@@ -33,14 +33,36 @@ class _ConsultScreenState extends State<ConsultScreen> {
     });
   }
 
-  void deleteVehicle(String plate) async {
-    final success = await api.deleteVehicle(plate);
+  Future<void> deleteVehicle(BuildContext context, String plate) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Confirmar eliminación"),
+        content: const Text("¿Estás seguro de que quieres eliminar este vehículo?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("No"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text("Sí"),
+          ),
+        ],
+      ),
+    );
 
-    if (success) {
-      showMessage("Vehículo eliminado.");
-      refreshList();
-    } else {
-      showMessage("Error al eliminar vehículo.");
+    if (confirmed == true) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+      final success = await api.deleteVehicle(plate);
+
+      if (success) {
+        showMessage("Vehículo eliminado.");
+        refreshList();
+      } else {
+        showMessage("Error al eliminar vehículo.");
+      }
     }
   }
 
@@ -95,7 +117,7 @@ class _ConsultScreenState extends State<ConsultScreen> {
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => deleteVehicle(v["plate"]),
+                        onPressed: () => deleteVehicle(context, v["plate"]),
                       ),
                     ),
                   );

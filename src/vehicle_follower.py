@@ -182,7 +182,7 @@ class VehicleFollower:
                     self.car_locations[plate] = in_slot
 
             # Guardar estado actualizado
-            with open("output/following_status.json", "w", encoding="utf-8") as f:
+            with open("data/following_status.json", "w", encoding="utf-8") as f:
                 json.dump(self.car_locations, f, indent=4)
 
             # Salir con "o"

@@ -141,4 +141,35 @@ class ApiService {
       throw Exception("Error al borrar el vehículo: ${response.body}");
     }
   }
+
+  // GET BLOCKING VEHICLES
+  Future<List<String>> getBlockingVehicles(String email) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/get/blocking-vehicles'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'email': email}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return List<String>.from(data['emails']);
+    } else {
+      throw Exception('Error al comprobar vehículos relacionados');
+    }
+  }
+
+  // SEND EMAILS
+  Future<List<String>> sendEmails(String emails) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/send/emails'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'emails': emails}),
+    );
+
+    if (response.statusCode == 200) {
+      return true
+    } else {
+      throw Exception('Error al comprobar vehículos relacionados');
+    }
+  }
 }

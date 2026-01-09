@@ -11,6 +11,35 @@ class UserScreen extends StatelessWidget {
 
   final api = ApiService();
 
+  bool isWarningButtonEnabled = false;
+  List<String> blockingEmails = [];
+
+  @override
+  void initState() {
+    super.initState();
+    checkVehicles();
+  }
+
+  Future<void> checkVehicles() async {
+    try {
+      final emails = await api.getBlockingVehicles(userEmail);
+
+      setState(() {
+        blockingEmails = emails;
+        isWarningButtonEnabled = emails.isNotEmpty;
+      });
+    } catch (e) {
+      setState(() {
+        blockingEmails = [];
+        isWarningButtonEnabled = false;
+      });
+    }
+  }
+
+  Future<void> _onWarningButtonPressed() async {
+    await notificationConfirmation(context, blockingEmails);
+  }
+
   void showMessage(BuildContext context, String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg)),
@@ -45,6 +74,44 @@ class UserScreen extends StatelessWidget {
         showMessage(context, "Usuario eliminado.");
       } else {
         showMessage(context, "Error al eliminar usuario.");
+      }
+    }
+  }
+
+  Future<void> notificationConfirmation(
+    BuildContext context,
+    String email,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Aviso de bloqueo"),
+        content: const Text(
+          "¿Quieres enviar que se envie un aviso al propietario del vehículo que te está bloqueando?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("No"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text("Sí"),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      Navigator.pop(context);
+      Navigator.pop(context);
+
+      final success = await api.sendEmails(blockingEmails);
+
+      if (success) {
+        showMessage(context, "Aviso enviado.");
+      } else {
+        showMessage(context, "Error al enviar el aviso.");
       }
     }
   }
@@ -124,7 +191,7 @@ class UserScreen extends StatelessWidget {
                   width: 300,
                   height: 75,
                   child: ElevatedButton(
-                    onPressed: () => showMessage(context, "Función en desarrollo"),
+                    onPressed: isWarningButtonEnabled ? onWarningButtonPressed : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
