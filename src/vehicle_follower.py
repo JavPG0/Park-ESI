@@ -103,14 +103,13 @@ class VehicleFollower:
             return None
 
 
-    def follow(self, class_file, input_dimension, conf_threshold, nms_threshold):
-
+    def follow(self, class_file, input_dimension, conf_threshold, nms_threshold, camera_id=0):
         # Leer clases YOLO
         with open(class_file, 'r', encoding="utf-8") as f:
             classes = [line.strip() for line in f.readlines()]
         target_classes = {'car'}
 
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(camera_id)
         if not cap.isOpened():
             raise RuntimeError("No se pudo abrir la cámara")
 
