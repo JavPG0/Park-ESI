@@ -27,7 +27,7 @@ class VehicleIdentifier:
         
         # Resultado acumulado
         self.results = []
-        self.json_path = "data/following_status.json"
+        self.json_path = "data/results.json"
     
     def identify(self, class_file, input_dimension, conf_threshold, nms_threshold, camera_id=3):
         # Leer clases de YOLO
