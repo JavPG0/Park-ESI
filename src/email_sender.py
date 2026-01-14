@@ -3,8 +3,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # Datos del remitente
-remitente = "park.ESI@gmail.com"
-contraseña = "eLmEjOrPaRkInGdElMuNdO_13071"
+remitente = "parkinginteractivoparkesi@gmail.com"
+contraseña = "kbbx xzqj idxo snvh"
 
 def send_emails(emails):
     for mail in emails:

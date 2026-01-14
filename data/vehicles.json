@@ -1,16 +1,16 @@
 [
     {
-        "email": "aloncampi@gmail.com",
-        "plate": "1234 ABC",
-        "color": "Rojo",
-        "brand": "Renault",
+        "email": "javierpalominogomez04@gmail.com",
+        "plate": "1234ABC",
+        "color": "black",
+        "brand": null,
         "shared": false
     },
     {
         "email": "aloncampi@gmail.com",
-        "plate": "1244GTF",
-        "color": "Negro",
-        "brand": "Opel",
+        "plate": "null",
+        "color": "red",
+        "brand": null,
         "shared": false
     }
 ]

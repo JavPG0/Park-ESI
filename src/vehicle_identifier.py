@@ -1,7 +1,5 @@
 
-# vehicle_identifier.py - VERSIÓN COMPLETA CORREGIDA
 import json
-import os
 import cv2
 import numpy as np
 from itt import ITT
@@ -46,7 +44,6 @@ class VehicleIdentifier:
         print(f"[VehicleIdentifier] Presiona 'o' para detener\n")
         
         running = True
-        frame_count = 0
         
         try:
             while running:
@@ -54,8 +51,7 @@ class VehicleIdentifier:
                 if not ret:
                     print(f"[VehicleIdentifier] No se pudo leer frame")
                     break
-                
-                frame_count += 1
+
                 h, w = frame.shape[:2]
                 
                 # Forward del YOLO
@@ -152,8 +148,6 @@ class VehicleIdentifier:
                 cv2.putText(frame, f"Vehiculos detectados: {detected_count}", (10, 30),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
                 cv2.putText(frame, f"Vehiculos registrados: {len(self.results)}", (10, 60),
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-                cv2.putText(frame, f"Frames: {frame_count}", (10, 90),
                            cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
                 
                 # Mostrar detección

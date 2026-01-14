@@ -1,0 +1,14 @@
+[
+    {
+        "plate": "null",
+        "color": "red",
+        "brand": null,
+        "slot_id": 12
+    },
+    {
+        "plate": "1234ABC",
+        "color": "black",
+        "brand": null,
+        "slot_id": 37
+    }
+]

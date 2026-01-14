@@ -132,24 +132,26 @@ def get_related_vehicles(data: dict):
     if not email:
         raise HTTPException(status_code=400, detail="Email requerido")
 
-    vehicles = load_vehicles()
-    following = load_following_status()  # dict: {matricula: plaza | None}
+    vehicles = load_vehicles()        # Info de vehículos + email
+    results = load_following_status() # Info de detección: lista de dicts con plate y slot_id
 
-    # Matrículas del usuario
-    user_plates = {
-        v["plate"]
-        for v in vehicles
-        if v["email"] == email
-    }
-
-    if not user_plates:
+    # Filtrar vehículos del usuario por email
+    user_vehicles = []
+    for v in vehicles:
+        for r in results:
+            if (
+                v["plate"] == r["plate"] and
+                v["color"] == r["color"] and
+                v["brand"] == r["brand"]
+            ):
+                user_vehicles.append(r)
+    if not user_vehicles:
         return {"emails": []}
 
-    # Plazas donde están los coches del usuario
+    # Plazas donde están los coches del usuario según results
     user_slots = {
-        following[plate]
-        for plate in user_plates
-        if plate in following and following[plate] is not None
+        v["slot_id"]
+        for v in user_vehicles
     }
 
     if not user_slots:
@@ -160,9 +162,9 @@ def get_related_vehicles(data: dict):
 
     # Matrículas aparcadas en esas plazas
     plates_in_target_slots = {
-        plate
-        for plate, slot in following.items()
-        if slot in target_slots
+        v["plate"]
+        for v in results
+        if v["slot_id"] in target_slots
     }
 
     # Emails de esos vehículos
@@ -174,7 +176,7 @@ def get_related_vehicles(data: dict):
 
     return {"emails": list(result_emails)}
 
-@app.post("/send/emails")
+@app.post("/send-emails")
 def get_related_vehicles(data: dict):
     emails = data.get("emails")
     send_all_emails(emails)

@@ -34,8 +34,8 @@ def run_identifier(camera_id):
 
 def main():
     # Configuración de cámaras (ajustar según disponibilidad)
-    CAMERA_DETECTOR = 2     # Cámara para monitorización del parking
-    CAMERA_IDENTIFIER = 0   # Cámara para identificación de vehículos
+    CAMERA_DETECTOR = 0     # Cámara para monitorización del parking
+    CAMERA_IDENTIFIER = 2   # Cámara para identificación de vehículos
     
     print("Park-ESI - Sistema Multi-Cámara")
     
