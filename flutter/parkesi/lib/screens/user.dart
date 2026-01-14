@@ -4,12 +4,17 @@ import 'consult.dart';
 import 'register_vehicle.dart';
 import '../services/fastapi.dart';
 
-class UserScreen extends StatelessWidget {
+class UserScreen extends StatefulWidget {
   final String email;
 
-  UserScreen({super.key, required this.email});
+  const UserScreen({super.key, required this.email});
 
-  final api = ApiService();
+  @override
+  State<UserScreen> createState() => _UserScreenState();
+}
+
+class _UserScreenState extends State<UserScreen> {
+  final ApiService api = ApiService();
 
   bool isWarningButtonEnabled = false;
   List<String> blockingEmails = [];
@@ -22,13 +27,13 @@ class UserScreen extends StatelessWidget {
 
   Future<void> checkVehicles() async {
     try {
-      final emails = await api.getBlockingVehicles(userEmail);
+      final emails = await api.getBlockingVehicles(widget.email);
 
       setState(() {
         blockingEmails = emails;
         isWarningButtonEnabled = emails.isNotEmpty;
       });
-    } catch (e) {
+    } catch (_) {
       setState(() {
         blockingEmails = [];
         isWarningButtonEnabled = false;
@@ -37,30 +42,24 @@ class UserScreen extends StatelessWidget {
   }
 
   Future<void> _onWarningButtonPressed() async {
-    await notificationConfirmation(context, blockingEmails);
+    await notificationConfirmation(context);
   }
 
-  void showMessage(BuildContext context, String msg) {
+  void showMessage(String msg) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(msg)),
     );
   }
 
-  Future<void> deleteConfirmation(BuildContext context) async {
+  Future<void> deleteConfirmation() async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (_) => AlertDialog(
         title: const Text("Confirmar eliminación"),
         content: const Text("¿Estás seguro de que quieres eliminar este usuario?"),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("No"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text("Sí"),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Sí")),
         ],
       ),
     );
@@ -68,51 +67,30 @@ class UserScreen extends StatelessWidget {
     if (confirmed == true) {
       Navigator.pop(context);
       Navigator.pop(context);
-      final success = await api.deleteUser(email);
 
-      if (success) {
-        showMessage(context, "Usuario eliminado.");
-      } else {
-        showMessage(context, "Error al eliminar usuario.");
-      }
+      final success = await api.deleteUser(widget.email);
+      showMessage(success ? "Usuario eliminado." : "Error al eliminar usuario.");
     }
   }
 
-  Future<void> notificationConfirmation(
-    BuildContext context,
-    String email,
-  ) async {
+  Future<void> notificationConfirmation(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (_) => AlertDialog(
         title: const Text("Aviso de bloqueo"),
         content: const Text(
-          "¿Quieres enviar que se envie un aviso al propietario del vehículo que te está bloqueando?",
+          "¿Quieres enviar un aviso al propietario del vehículo que te está bloqueando?",
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("No"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text("Sí"),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text("No")),
+          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Sí")),
         ],
       ),
     );
 
     if (confirmed == true) {
-      Navigator.pop(context);
-      Navigator.pop(context);
-
       final success = await api.sendEmails(blockingEmails);
-
-      if (success) {
-        showMessage(context, "Aviso enviado.");
-      } else {
-        showMessage(context, "Error al enviar el aviso.");
-      }
+      showMessage(success ? "Aviso enviado." : "Error al enviar el aviso.");
     }
   }
 
@@ -142,7 +120,7 @@ class UserScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => ConsultScreen(email:email)),
+                        MaterialPageRoute(builder: (_) => ConsultScreen(email: widget.email)),
                       );
                     },
                     style: ElevatedButton.styleFrom(
@@ -163,7 +141,7 @@ class UserScreen extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => RegisterVehicleScreen(email:email)),
+                        MaterialPageRoute(builder: (_) => RegisterVehicleScreen(email: widget.email)),
                       );
                     },
                     child: const Text(
@@ -178,7 +156,7 @@ class UserScreen extends StatelessWidget {
                   width: 300,
                   height: 75,
                   child: ElevatedButton(
-                    onPressed: () => deleteConfirmation(context),
+                    onPressed: () => deleteConfirmation,
                     child: const Text(
                       "Eliminar Usuario",
                       style: TextStyle(fontSize:20, fontWeight: FontWeight.bold)),
@@ -191,7 +169,7 @@ class UserScreen extends StatelessWidget {
                   width: 300,
                   height: 75,
                   child: ElevatedButton(
-                    onPressed: isWarningButtonEnabled ? onWarningButtonPressed : null,
+                    onPressed: isWarningButtonEnabled ? _onWarningButtonPressed : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,

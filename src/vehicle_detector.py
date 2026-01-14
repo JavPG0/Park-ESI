@@ -30,30 +30,9 @@ class VehicleDetector:
         
         # Base de datos resultados
         self.results = []
-        self.output_folder = "output"
-        os.makedirs(self.output_folder, exist_ok=True)
-        
-        # Para evitar duplicados
-        self.processed_centers = []
         
         # Cargamos el lector de matrículas
         self.plate_reader = PlateReader()
-        
-        # Diccionario de matrículas ya leídas
-        self.processed_plates = {}
-    
-    def is_duplicate(self, plate, cx, cy):
-        """Verifica si el vehículo ya fue procesado"""
-        # Si la matrícula ya fue procesada
-        if plate and plate in self.processed_plates:
-            return True
-        
-        # Verificar por posición
-        for (px, py) in self.processed_centers:
-            if abs(px - cx) < 60 and abs(py - cy) < 60:
-                return True
-        
-        return False
     
     def point_in_polygon(self, x, y, poly):
         """Detecta si un punto está dentro de un polígono"""
@@ -178,33 +157,18 @@ class VehicleDetector:
                             # Leer matrícula
                             plate = self.plate_reader.read_plate(crop)
                             
-                            # Evitar duplicados por matrícula
-                            if self.is_duplicate(plate, cx, cy):
-                                continue
-                            
                             # Obtener características del vehículo con el LLM
                             info = self.itt.describe_vehicle(crop)
                             
-                            # Guardar imagen recortada limpia
-                            vehicle_id = len(self.results) + 1
-                            img_path = f"{self.output_folder}/vehicle_{vehicle_id}.jpg"
-                            cv2.imwrite(img_path, crop)
-                            
-                            # Registrar matrícula procesada
-                            if plate:
-                                self.processed_plates[plate] = vehicle_id
-                            
-                            # Añadir centro procesado
-                            self.processed_centers.append((cx, cy))
-                            
-                            # Guardar resultados en JSON
-                            self.results.append({
-                                "vehicle_id": vehicle_id,
+                            car = {
                                 "plate": plate,
                                 "color": info["color"],
-                                "brand": info["brand"],
-                                "image_file": img_path
-                            })
+                                "brand": info["brand"]
+                            }
+
+                            # Guardar resultados en JSON
+                            if car not in self.results:
+                                self.results.append(car)
                 
                 # Contar espacios libres
                 free_spaces = sum(1 for slot in self.parking_slots if not slot.get("occupied", False))
@@ -237,7 +201,7 @@ class VehicleDetector:
                 
                 # Guardar JSON con los resultados
                 output_json_path = f"{self.output_folder}/"
-                with open(f"{output_json_path}results.json", "w") as f:
+                with open(f"data/results.json", "w") as f:
                     json.dump(self.results, f, indent=4)
                 
                 with open("data/parking_slots.json", "w") as f:

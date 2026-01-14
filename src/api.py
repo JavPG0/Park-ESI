@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from pathlib import Path
-from email_sender import send_emails
+from .email_sender import send_emails
 import json
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -33,7 +33,7 @@ def save_vehicles(vehicles):
         json.dump(vehicles, f, indent=4)
 
 def load_following_status():
-    path = BASE_DIR / "data/following_status.json"
+    path = BASE_DIR / "data/results.json"
     if not path.exists():
         return {}
     with open(path, "r", encoding="utf-8") as f:

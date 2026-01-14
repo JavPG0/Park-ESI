@@ -27,8 +27,7 @@ class VehicleIdentifier:
         
         # Resultado acumulado
         self.results = []
-        os.makedirs("output", exist_ok=True)
-        self.json_path = "output/vehicles.json"
+        self.json_path = "data/following_status.json"
     
     def identify(self, class_file, input_dimension, conf_threshold, nms_threshold, camera_id=3):
         # Leer clases de YOLO
@@ -124,20 +123,25 @@ class VehicleIdentifier:
                         # Descripción del coche (color y marca)
                         info = self.itt.describe_vehicle(crop)
                         
-                        # Guardar resultado
-                        vehicle_data = {
-                            "plate": plate,
-                            "color": info["color"],
-                            "brand": info["brand"]
-                        }
-                        
                         # Evitar duplicados por matrícula
                         if plate:
+                            vehicle_data = {
+                                "plate": plate,
+                                "color": info["color"],
+                                "brand": info["brand"]
+                            }
+
                             already_exists = any(v.get("plate") == plate for v in self.results)
                             if not already_exists:
                                 self.results.append(vehicle_data)
                                 print(f"[VehicleIdentifier] Nuevo vehículo: {plate} - {info['color']} {info['brand']}")
                         else:
+                            vehicle_data = {
+                                "plate": "null",
+                                "color": info["color"],
+                                "brand": info["brand"]
+                            }
+
                             self.results.append(vehicle_data)
                 
                 # Guardar en JSON

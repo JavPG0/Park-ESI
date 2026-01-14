@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  final String baseUrl = "http://192.168.5.38:8000"; // IP local
-  //uvicorn src.api:app --host 1X.X.X.X --port 8000
+  final String baseUrl = "http://10.178.214.150:8000"; // IP local
+  //uvicorn src.api:app --host X.X.X.X --port 8000
 
   // GET PARKING
   Future<List<dynamic>> getParkingSlots() async {
@@ -159,17 +159,13 @@ class ApiService {
   }
 
   // SEND EMAILS
-  Future<List<String>> sendEmails(String emails) async {
+  Future<bool> sendEmails(List<String> emails) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/send/emails'),
+      Uri.parse('$baseUrl/send-emails'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({'emails': emails}),
     );
 
-    if (response.statusCode == 200) {
-      return true
-    } else {
-      throw Exception('Error al comprobar vehículos relacionados');
-    }
+    return response.statusCode == 200;
   }
 }

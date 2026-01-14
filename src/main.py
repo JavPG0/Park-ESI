@@ -17,7 +17,7 @@ INPUT_DIMENSION = 416   # Dimensión de entrada para YOLO
 def run_detector(camera_id):
     # Proceso 1: Detecta vehículos y monitoriza plazas de parking
     try:
-        print(f"[PROCESO 1] Iniciando VehicleDetector en cámara {camera_id}")
+        print(f"[PROCESO 1] Iniciando VehicleFollower en cámara {camera_id}")
         vd = VehicleDetector(MODEL_CFG, MODEL_WEIGHTS)
         vd.detect(CLASS_FILE, INPUT_DIMENSION, CONF_THRESHOLD, NMS_THRESHOLD, camera_id)
     except Exception as e:
